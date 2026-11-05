@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>password</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;height:100%;overflow:hidden;font-family:'Quicksand',sans-serif}
+body{display:flex;justify-content:center;align-items:center;background:linear-gradient(135deg,#ffe0ea,#ffc2d4 50%,#e8c6ff);background-size:200% 200%;animation:bg 10s ease infinite}
+@keyframes bg{50%{background-position:100% 100%}}
+.orb{position:fixed;border-radius:50%;filter:blur(40px);opacity:.55;animation:f 8s ease-in-out infinite alternate}
+.o1{width:220px;height:220px;background:#ff9ebb;top:8%;left:-60px}.o2{width:260px;height:260px;background:#c9a7ff;bottom:5%;right:-80px;animation-delay:-3s}
+@keyframes f{to{transform:translate(30px,-40px) scale(1.15)}}
+.box{position:relative;z-index:2;width:290px;padding:36px 28px 30px;text-align:center;border-radius:28px;color:#b0486a;
+ background:rgba(255,255,255,.45);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.8);
+ box-shadow:0 20px 50px rgba(214,100,140,.3),inset 0 1px 0 #fff}
+.lock{font-size:40px;animation:b 2s infinite}@keyframes b{50%{transform:translateY(-6px)}}
+h2{font-family:'Dancing Script',cursive;font-size:32px;margin:8px 0 4px}
+p{margin:0 0 20px;font-size:14px;opacity:.8}
+input{width:100%;box-sizing:border-box;padding:13px;border:2px solid rgba(255,255,255,.9);background:rgba(255,255,255,.7);border-radius:14px;font:700 20px 'Quicksand';letter-spacing:8px;text-align:center;color:#b0486a;outline:none;transition:.2s}
+input:focus{box-shadow:0 0 0 4px #ffb3c9aa}
+button{margin-top:16px;width:100%;padding:13px;border:0;border-radius:14px;color:#fff;font:700 17px 'Quicksand';cursor:pointer;background:linear-gradient(135deg,#ff7aa2,#ff5c8a);box-shadow:0 8px 20px #ff5c8a66;transition:.2s}
+button:active{transform:scale(.97)}
+#err{height:18px;margin-top:10px;font-size:13px;color:#e63946}
+.shake{animation:s .35s}@keyframes s{25%{transform:translateX(-9px)}75%{transform:translateX(9px)}}
+canvas{position:fixed;inset:0;pointer-events:none}
+</style></head><body>
+<div class="orb o1"></div><div class="orb o2"></div><canvas id="c"></canvas>
+<div class="box" id="box">
+  <div class="lock">🔐</div><h2>Quà dành cho em</h2>
+  <p>Nhập mật khẩu (ngày sinh của em: ddmmyyyy)</p>
+  <input id="pw" type="password" inputmode="numeric" maxlength="8" placeholder="••••••••"><br>
+  <button onclick="check()">Mở quà 💝</button><div id="err"></div>
+</div>
+<script>
+const PASSWORD = '09112006'; // ??i m?t kh?u theo ng?y sinh c?a em (ddmmyyyy)
+const pw = document.getElementById('pw');
+const box = document.getElementById('box');
+const err = document.getElementById('err');
+
+function check() {
+  if (pw.value === PASSWORD) {
+    box.style.transition = '.6s';
+    box.style.opacity = '0';
+    box.style.transform = 'scale(1.1)';
+    setTimeout(() => location.href = 'sinhnhat.html', 600);
+  } else {
+    err.textContent = 'Sai rồi, thử lại nhé!';
+    box.classList.remove('shake');
+    void box.offsetWidth;
+    box.classList.add('shake');
+  }
+}
+
+pw.addEventListener('keydown', e => {
+  if (e.key === 'Enter') check();
+});
+
+const cv = document.getElementById('c');
+const x = cv.getContext('2d');
+let W, H;
+function rs() {
+  W = cv.width = innerWidth * devicePixelRatio;
+  H = cv.height = innerHeight * devicePixelRatio;
+}
+rs();
+onresize = rs;
+const hs = Array.from({ length: 22 }, () => ({
+  x: Math.random() * W,
+  y: Math.random() * H,
+  s: (8 + Math.random() * 16) * devicePixelRatio,
+  v: .3 + Math.random() * .8,
+  p: Math.random() * 6,
+  a: .2 + Math.random() * .4
+}));
+(function L() {
+  x.clearRect(0, 0, W, H);
+  hs.forEach(h => {
+    h.y -= h.v;
+    h.p += .02;
+    if (h.y < -30) h.y = H + 30;
+    x.globalAlpha = h.a;
+    x.fillStyle = '#ff6f91';
+    x.font = h.s + 'px serif';
+    x.fillText('?', h.x + Math.sin(h.p) * 20, h.y);
+  });
+  requestAnimationFrame(L);
+})();
+</script></body></html>
